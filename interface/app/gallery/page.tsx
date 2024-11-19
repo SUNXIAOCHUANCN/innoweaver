@@ -6,6 +6,7 @@ import MiniCard from '@/comp/solution/MiniCard';
 import Masonry from 'react-masonry-css';
 import { fetchQueryLikedSolutions } from '@/lib/actions';
 import { FaSearch } from 'react-icons/fa';
+import SearchBar from './SearchBar';
 
 interface MasonryGalleryProps {
     solutions: any[];
@@ -139,20 +140,7 @@ const Gallery = () => {
         >
             <div className="flex justify-center mt-8">
                 <header className="mb-6 text-center w-full">
-                    <form onSubmit={handleSearch} className="flex justify-center">
-                        <div className="relative w-[80%] max-w-3xl">
-                            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400">
-                                <FaSearch />
-                            </span>
-                            <input
-                                type="text"
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                placeholder="Search Solutions"
-                                className="w-full pl-12 pr-4 py-3 text-lg border border-neutral-700 rounded-lg bg-neutral-800 text-neutral-100 outline-none shadow focus:ring focus:ring-neutral-700 focus:border-neutral-500 transition-all duration-300"
-                            />
-                        </div>
-                    </form>
+                <SearchBar onSearch={handleSearch} />
                 </header>
             </div>
 
