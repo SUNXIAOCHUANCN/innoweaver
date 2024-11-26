@@ -1,12 +1,21 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, app, request, jsonify
 import utils.tasks as USER
 from utils.auth_utils import token_required, validate_input
 from utils.redis import *
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,  # 使用客户端的IP地址作为速率限制的依据，区分不同的请求来源
+    default_limits=["100 per minute"]  # 设置默认的速率限制，每分钟最多100次请求（可根据实际情况调整）
+)
+
 
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/api/register', methods=['POST'])
 @validate_input(['email', 'name', 'password', 'user_type'])
+@limiter.limit("5 per minute")
 def register():
     try:
         data = request.json
@@ -26,6 +35,7 @@ def register():
 
 @auth_bp.route('/api/login', methods=['POST'])
 @validate_input(['email', 'password'])
+@limiter.limit("5 per minute")
 def login():
     try:
         data = request.json
