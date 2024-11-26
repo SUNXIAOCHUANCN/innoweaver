@@ -4,8 +4,19 @@ from routes import *
 from utils.tasks import *
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask import Flask
+from flask_jwt_extended import JWTManager, create_access_token,create_refresh_token,jwt_required, get_jwt_identity
 
 app = Flask(__name__)
+
+# 设置JWT密钥，这是用于对令牌进行签名和验证的关键，要保证其保密性，可替换为复杂的随机字符串
+app.config['JWT_SECRET_KEY'] = 'your_secret_key'
+# 配置访问令牌的过期时间（以秒为单位，这里设置为30分钟，即1800秒，可根据实际需求调整）
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 1800
+# 配置刷新令牌的过期时间（以秒为单位，这里设置为7天，即604800秒，可按需更改）
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = 604800
+
+jwt_manager = JWTManager(app)
 CORS(app)  # 启用跨域支持
 
 limiter = Limiter(
