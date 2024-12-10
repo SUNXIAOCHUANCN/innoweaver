@@ -4,11 +4,25 @@ from routes import *
 from utils.tasks import *
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask import Flask
 from flask_jwt_extended import JWTManager, create_access_token,create_refresh_token,jwt_required, get_jwt_identity
+from flask_mail import Mail
+from itsdangerous import URLSafeTimedSerializer
 
 app = Flask(__name__)
 
+
+# 配置邮件服务器相关信息，以下是示例，需根据实际的邮件服务提供商进行修改
+app.config['MAIL_SERVER'] ='smtp.163.com'  # 邮件服务器地址
+app.config['MAIL_PORT'] = 587  # 邮件服务器端口，常见的有25、465、587等，根据实际情况调整
+app.config['MAIL_USE_TLS'] = True  # 是否使用TLS加密，部分邮件服务需要
+app.config['MAIL_USERNAME'] = 'zaile0502@163.com'  # 发件人的邮箱账号
+app.config['MAIL_PASSWORD'] = 'Wangkz0502'  # 发件人的邮箱密码
+app.config['MAIL_DEFAULT_SENDER'] = ('Innoweaver', 'zaile0502@163.com')  # 发件人显示名称及邮箱
+
+mail = Mail(app)
+
+# 配置用于生成和验证令牌的序列化器，设置密钥（要保证安全性，可使用复杂的随机字符串）
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 # 设置JWT密钥，这是用于对令牌进行签名和验证的关键，要保证其保密性，可替换为复杂的随机字符串
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'
 # 配置访问令牌的过期时间（以秒为单位，这里设置为30分钟，即1800秒，可根据实际需求调整）
